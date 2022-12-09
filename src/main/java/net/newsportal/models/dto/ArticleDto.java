@@ -12,4 +12,5 @@ public class ArticleDto {
     private String title;
     private String body;
     private Source source;
+    private String authorUsername;
 }

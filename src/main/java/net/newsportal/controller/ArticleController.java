@@ -1,9 +1,17 @@
 package net.newsportal.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import net.newsportal.models.Article;
+import net.newsportal.models.dto.ArticleDto;
+import net.newsportal.payload.response.MessageResponse;
+import net.newsportal.repository.ArticleRepository;
+import net.newsportal.service.ArticleService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -11,4 +19,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/portal/news")
 public class ArticleController {
 
+    private final ArticleService articleService;
+    private final ArticleRepository articleRepository;
+
+    @Autowired
+    public ArticleController(ArticleService articleService,
+                             ArticleRepository articleRepository) {
+        this.articleService = articleService;
+        this.articleRepository = articleRepository;
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addArticle(@RequestBody ArticleDto article) {
+        if(articleService.createArticle(article).equals(HttpStatus.OK)) {
+            return ResponseEntity.ok()
+                    .body(new MessageResponse("Successfully added new article."));
+        } else if (articleService.createArticle(article).equals(HttpStatus.BAD_REQUEST)) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("The article with such title already exists."));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/all")
+    public List<Article> getAllArticles() {
+        return articleRepository.findAll();
+    }
 }

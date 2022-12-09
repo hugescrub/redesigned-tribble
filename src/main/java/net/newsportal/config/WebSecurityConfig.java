@@ -55,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 // public endpoints
-                .authorizeRequests().antMatchers("/portal/auth/**").permitAll()
+                .authorizeRequests().antMatchers("/portal/auth/**", "/", "/login").permitAll()
                 //.regexMatchers("^\\/items\\?id=\\d(?:\\d+)?$", "^\\/menu\\?type=(?:BREAKFAST|GENERIC|DINNER|LUNCH)$").permitAll()
                 // other endpoints private
                 .anyRequest().authenticated();

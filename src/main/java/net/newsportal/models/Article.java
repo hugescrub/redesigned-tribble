@@ -35,7 +35,6 @@ public class Article {
     @CreationTimestamp
     private LocalDateTime created;
 
-    @NotBlank
     @UpdateTimestamp
     private LocalDateTime updated;
 
@@ -46,7 +45,9 @@ public class Article {
             uniqueConstraints = @UniqueConstraint(columnNames = {"article_id", "source_id"}))
     private List<Source> sources = new ArrayList<>();
 
-    @NotBlank
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private User author;
+
     private String tag = null;
 
     public Article() {
@@ -62,12 +63,16 @@ public class Article {
         this.updated = updated;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
     public void setSources(List<Source> sources) {
         this.sources = sources;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     @Override

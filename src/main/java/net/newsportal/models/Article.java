@@ -1,5 +1,6 @@
 package net.newsportal.models;
 
+import jdk.jfr.BooleanFlag;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -50,6 +51,9 @@ public class Article {
 
     private String tag = null;
 
+    @BooleanFlag
+    private boolean isApproved = false;
+
     public Article() {
     }
 
@@ -73,6 +77,10 @@ public class Article {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public void setApproved(boolean approved) {
+        isApproved = approved;
     }
 
     @Override

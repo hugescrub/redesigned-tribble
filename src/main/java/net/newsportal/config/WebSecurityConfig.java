@@ -55,7 +55,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 // public endpoints
-                .authorizeRequests().antMatchers("/portal/auth/**", "/", "/login", "/article/**").permitAll()
+                // TODO admin and compose are temporary
+                .authorizeRequests().antMatchers("/portal/auth/**", "/", "/login", "/article/**", "/admin", "/compose").permitAll()
                 //.regexMatchers("^\\/items\\?id=\\d(?:\\d+)?$", "^\\/menu\\?type=(?:BREAKFAST|GENERIC|DINNER|LUNCH)$").permitAll()
                 // other endpoints private
                 .anyRequest().authenticated();

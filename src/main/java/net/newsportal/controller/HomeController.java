@@ -13,12 +13,16 @@ import java.util.stream.Collectors;
 
 @Controller
 public class HomeController {
+
+    private final ArticleRepository articleRepository;
+
     @Autowired
-    ArticleRepository articleRepository;
+    public HomeController(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
+    }
 
     @GetMapping
-    String getHome(Model model) {
-        // TODO Получать только проверенные классифированные статьи
+    public String getHome(Model model) {
         List<Article> articles = articleRepository.findAll()
                 .stream()
                 .filter(article -> article.isApproved() && article.getTag() != null)
@@ -28,13 +32,12 @@ public class HomeController {
     }
 
     @GetMapping("/about")
-    String about() {
+    public String about() {
         return "about";
     }
 
     @GetMapping("/article/{id}")
-    String getArticle(Model model, @PathVariable Long id) {
-        // TODO Не давать перейти на непроверенную, неклассифицированную статью
+    public String getArticle(Model model, @PathVariable Long id) {
         if (articleRepository.findById(id).isPresent()) {
             Article article = articleRepository.findById(id).get();
             if (article.isApproved() && article.getTag() != null)

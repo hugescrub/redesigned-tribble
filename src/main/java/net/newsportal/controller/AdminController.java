@@ -16,12 +16,16 @@ import java.util.stream.Collectors;
 
 @Controller
 public class AdminController {
+
+    private final ArticleRepository articleRepository;
+
     @Autowired
-    ArticleRepository articleRepository;
+    public AdminController(ArticleRepository articleRepository) {
+        this.articleRepository = articleRepository;
+    }
 
     @GetMapping("/admin")
-    String adminPage(Model model) {
-        // TODO Получать только не проверенные классифированные статьи -> line 28-29
+    public String adminPage(Model model) {
         List<Article> articles = articleRepository.findAll()
                 .stream()
                 .filter(article -> !article.isApproved() && article.getTag() != null)
@@ -31,12 +35,12 @@ public class AdminController {
     }
 
     @GetMapping("/compose")
-    String composePage() {
+    public String composePage() {
         return "compose";
     }
 
     @PostMapping(value = "/compose", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    String createArticle(Model model, @RequestBody MultiValueMap<String, String> formData) {
+    public String createArticle(Model model, @RequestBody MultiValueMap<String, String> formData) {
         String title = formData.get("title").get(0);
         String body = formData.get("body").get(0);
 

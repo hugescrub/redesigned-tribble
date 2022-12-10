@@ -10,7 +10,6 @@ import net.newsportal.security.UserDetailsImpl;
 import net.newsportal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -65,12 +64,5 @@ public class AuthController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         return ResponseEntity.ok()
                 .body(new MessageResponse("Logged in successfully with id _" + userDetails.getId()));
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/protected")
-    // TODO rm
-    public String respond() {
-        return String.valueOf(Math.random() * 10);
     }
 }

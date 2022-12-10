@@ -22,11 +22,11 @@ public class AdminController {
     @GetMapping("/admin")
     String adminPage(Model model) {
         // TODO Получать только не проверенные классифированные статьи -> line 28-29
-        List<Article> notApproved = articleRepository.findAll()
+        List<Article> articles = articleRepository.findAll()
                 .stream()
                 .filter(article -> !article.isApproved() && article.getTag() != null)
                 .collect(Collectors.toList());
-        model.addAttribute("articles", notApproved);
+        model.addAttribute("articles", articles);
         return "admin";
     }
 

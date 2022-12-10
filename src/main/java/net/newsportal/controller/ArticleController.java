@@ -6,9 +6,11 @@ import net.newsportal.models.dto.ArticleDto;
 import net.newsportal.payload.response.MessageResponse;
 import net.newsportal.repository.ArticleRepository;
 import net.newsportal.service.ArticleService;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,5 +47,16 @@ public class ArticleController {
     @GetMapping("/all")
     public List<Article> getAllArticles() {
         return articleRepository.findAll();
+    }
+
+    @GetMapping("/valid") // show all valid articles (validated, not fake, with a tag)
+    public String getAllValid(Model model) {
+        throw new NotYetImplementedException();
+        /*
+        TODO
+            /Pseudocode/
+            if(article.!fake && article.tag.existsInDb:? && article.author.existsInDb)
+                -> return view with articles
+         */
     }
 }

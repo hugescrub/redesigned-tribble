@@ -1,40 +1,38 @@
 package net.newsportal.controller;
 
+import net.newsportal.models.Article;
+import net.newsportal.repository.ArticleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class HomeController {
+    @Autowired
+    ArticleRepository articleRepository;
+
     @GetMapping
     String getHome(Model model) {
-        Article article = new Article();
-        article.title = "Article";
-        article.body = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos iusto nam laudantium perspiciatis harum assumenda reiciendis est ex molestiae neque.";
-        article.author = "Mario";
-        article.date = "2022/1/1";
-        article.id = "1";
-
-        Article article2 = new Article();
-        article2.title = "Article 2";
-        article2.body = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos iusto nam laudantium perspiciatis harum assumenda reiciendis est ex molestiae neque.";
-        article2.author = "Luigi";
-        article2.date = "2022/1/2";
-        article2.id = "2";
-
-        model.addAttribute("articles", List.of(article, article2));
-
+        // TODO Получать только проверенные классифированные статьи
+        List<Article> articles = articleRepository.findAll();
+        model.addAttribute("articles", articles);
         return "home";
     }
-}
 
-// Mock Class
-class Article {
-    public String id;
-    public String title;
-    public String body;
-    public String author;
-    public String date;
+    @GetMapping("/article/{id}")
+    String getArticle(Model model, @PathVariable String id) {
+        // TODO Не давать перейти на непроверенную, неклассифицированную статью
+        Optional<Article> article = articleRepository.findById(Long.valueOf(id));
+        if (article.isEmpty()) {
+            throw new ResourceNotFoundException();
+        }
+        model.addAttribute("article", article.get());
+        return "article";
+    }
 }

@@ -25,6 +25,11 @@ public class HomeController {
         return "home";
     }
 
+    @GetMapping("/about")
+    String about() {
+        return "about";
+    }
+
     @GetMapping("/article/{id}")
     String getArticle(Model model, @PathVariable String id) {
         // TODO Не давать перейти на непроверенную, неклассифицированную статью

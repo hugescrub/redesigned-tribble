@@ -1,6 +1,7 @@
 package net.newsportal.config;
 
-import net.newsportal.repository.UserRepository;
+import net.newsportal.security.CookiesFilter;
+import net.newsportal.security.UserAuthenticationEntryPoint;
 import net.newsportal.security.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 @Configuration
 @EnableWebSecurity
@@ -21,15 +24,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
         prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserRepository userRepository;
-    private final AuthEntryPoint entryPoint;
     private final UserDetailsServiceImpl userDetails;
+    private final CookiesFilter cookiesFilter;
+    private final UserAuthenticationEntryPoint userAuthenticationEntryPoint;
 
     @Autowired
-    public WebSecurityConfig(UserRepository userRepository, AuthEntryPoint entryPoint, UserDetailsServiceImpl userDetails) {
-        this.userRepository = userRepository;
-        this.entryPoint = entryPoint;
+    public WebSecurityConfig(UserDetailsServiceImpl userDetails,
+                             CookiesFilter cookiesFilter,
+                             UserAuthenticationEntryPoint userAuthenticationEntryPoint) {
         this.userDetails = userDetails;
+        this.cookiesFilter = cookiesFilter;
+        this.userAuthenticationEntryPoint = userAuthenticationEntryPoint;
     }
 
     @Override
@@ -48,18 +53,38 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().httpBasic().authenticationEntryPoint(entryPoint)
+        http.cors()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement()
+                    .maximumSessions(1)
+                    .expiredUrl("/expired")
+                    .and()
+                    .invalidSessionUrl("/login")
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .sessionFixation()
+                    .migrateSession()
+                    .and()
+                    .logout().logoutUrl("/logout")
+                    .deleteCookies(cookiesFilter.COOKIE_NAME, "JSESSIONID")
+                    .clearAuthentication(true)
+                    .invalidateHttpSession(true)
                 .and()
                 // public endpoints
                 // TODO admin and compose are temporary
-                .authorizeRequests().antMatchers("/portal/auth/**", "/", "/login", "/article/**", "/admin", "/compose", "/about").permitAll();
-                //.regexMatchers("^\\/items\\?id=\\d(?:\\d+)?$", "^\\/menu\\?type=(?:BREAKFAST|GENERIC|DINNER|LUNCH)$").permitAll()
+                .authorizeRequests().antMatchers("/portal/auth/**", "/", "/login", "/article/**", "/about").permitAll()
                 // other endpoints private
-                // TODO temporary PERMIT ALL
-                //.anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(cookiesFilter, ChannelProcessingFilter.class)
+                .exceptionHandling().authenticationEntryPoint(userAuthenticationEntryPoint);
+
+        http.csrf().disable();
     }
 }

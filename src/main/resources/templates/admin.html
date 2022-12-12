@@ -27,17 +27,18 @@
       <h1 class="mb-3">Waiting for approval</h1>
       <div th:each="article : ${articles}" class="border p-3 mt-2">
         <h1 class="fs-3" th:text="${article.title}" />
-        <span class="badge bg-success mb-2" th:text="${article.classificationResult.items[0].label}" />
+        <span class="badge bg-success mb-2 text-capitalize" th:text="${article.classificationResult.items[0].label}" />
         <p class="mb-2" th:text="${article.body}" />
         <p class="text-muted mb-0" th:text="|${article.author} - ${article.created}|" />
 
-        <button class="btn btn-link m-auto mb-3 d-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapse"
+        <button class="btn btn-link m-auto mb-3 d-block" type="button" data-bs-toggle="collapse"
+                th:attr="data-bs-target='#collapse-'+${article.id}"
           aria-expanded="false" aria-controls="collapseExample">
-          Посмотреть все результаты классификации
+          Show all classification results
         </button>
-        <div class="collapse" id="collapse">
+        <div class="collapse" th:id="'collapse-'+${article.id}">
           <ul class="list-unstyled d-flex gap-3 justify-content-center">
-            <li class="border p-1" th:each="tag : ${article.classificationResult.items}">
+            <li th:each="tag : ${article.classificationResult.items}" class="border p-1">
               <span th:text="${tag.label}" class="text-capitalize" />
               <span th:text="${tag.probability}" class="badge text-bg-light" />
             </li>

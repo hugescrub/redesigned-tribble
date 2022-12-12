@@ -59,6 +59,20 @@ public class ArticleController {
         return ResponseEntity.ok().body("OK");
     }
 
+    @RequestMapping(value="/approve/{id}", method = RequestMethod.PATCH)
+    public ResponseEntity setIsApproved(@PathVariable String id) {
+        Optional<Article> article = articleRepository.findById(Long.valueOf(id));
+
+        if (article.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        article.get().setApproved(true);
+        articleRepository.save(article.get());
+
+        return ResponseEntity.ok().body("OK");
+    }
+
     @PostMapping("/add")
     public ResponseEntity<?> addArticle(@RequestBody ArticleDto article) {
         if(articleService.createArticle(article).equals(HttpStatus.OK)) {

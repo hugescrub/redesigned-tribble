@@ -1,8 +1,20 @@
 $(document).ready(function () {
-  $("#approve").click(function () {
-    console.log(this);
+  $('*[data-action="approve"]').click(function () {
+    $.ajax({
+      url: `portal/news/approve/${this.dataset.id}`,
+      method: "patch",
+      success: function () {
+        location.reload();
+      },
+    });
   });
-  $("#send").click(function () {
+  $('*[data-action="send"]').click(function () {
+    $(this).html(
+      `
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      `
+    );
+    $("button").prop("disabled", true);
     $.post(
       `http://localhost:8081/classify?uuid=${this.dataset.id}`,
       function () {

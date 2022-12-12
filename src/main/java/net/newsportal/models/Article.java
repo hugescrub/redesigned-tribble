@@ -51,6 +51,10 @@ public class Article {
 
     private String tag = null;
 
+    // :^)
+    @Transient
+    private ClassificationResult classificationResult;
+
     @BooleanFlag
     private boolean isApproved = false;
 
@@ -81,6 +85,14 @@ public class Article {
 
     public void setApproved(boolean approved) {
         isApproved = approved;
+    }
+
+    public ClassificationResult getClassificationResult() {
+        return classificationResult;
+    }
+
+    public void setClassificationResult(ClassificationResult classificationResult) {
+        this.classificationResult = classificationResult;
     }
 
     @Override

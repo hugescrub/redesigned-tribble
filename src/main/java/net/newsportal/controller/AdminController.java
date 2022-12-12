@@ -1,6 +1,9 @@
 package net.newsportal.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.newsportal.models.Article;
+import net.newsportal.models.ClassificationResult;
 import net.newsportal.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -30,6 +33,18 @@ public class AdminController {
                 .stream()
                 .filter(article -> !article.isApproved() && article.getTag() != null)
                 .collect(Collectors.toList());
+
+        // :^)
+        for (var article : articles) {
+            try {
+                ClassificationResult classificationResult = new ObjectMapper().readValue(article.getTag(),
+                        ClassificationResult.class);
+                article.setClassificationResult(classificationResult);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         model.addAttribute("articles", articles);
         return "admin";
     }

@@ -1,11 +1,7 @@
 package net.newsportal.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.newsportal.models.Article;
-import net.newsportal.models.ClassificationResult;
-import net.newsportal.models.ClassificationResultItem;
 import net.newsportal.models.dto.ArticleDto;
 import net.newsportal.payload.response.MessageResponse;
 import net.newsportal.repository.ArticleRepository;
@@ -37,7 +33,7 @@ public class ArticleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getById(@PathVariable String id) {
+    public ResponseEntity<?> getById(@PathVariable String id) {
         Optional<Article> article = articleRepository.findById(Long.valueOf(id));
         if (article.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -46,7 +42,7 @@ public class ArticleController {
     }
 
     @RequestMapping(value="/{id}", method=RequestMethod.PATCH)
-    public ResponseEntity setTags(@PathVariable String id, @RequestBody String classificationResult) {
+    public ResponseEntity<?> setTags(@PathVariable String id, @RequestBody String classificationResult) {
         Optional<Article> article = articleRepository.findById(Long.valueOf(id));
 
         if (article.isEmpty()) {
@@ -60,7 +56,7 @@ public class ArticleController {
     }
 
     @RequestMapping(value="/approve/{id}", method = RequestMethod.PATCH)
-    public ResponseEntity setIsApproved(@PathVariable String id) {
+    public ResponseEntity<?> setIsApproved(@PathVariable String id) {
         Optional<Article> article = articleRepository.findById(Long.valueOf(id));
 
         if (article.isEmpty()) {

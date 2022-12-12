@@ -68,4 +68,11 @@ public class LoginController {
         model.addAttribute("error", "Failed to login. Wrong username or password.");
         return "login";
     }
+
+    @PostMapping(value = "/logout")
+    public void removeCookies(HttpServletResponse response) {
+        Cookie removeCookie = new Cookie(CookiesFilter.COOKIE_NAME, "");
+        removeCookie.setMaxAge(0);
+        response.addCookie(removeCookie);
+    }
 }

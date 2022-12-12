@@ -49,6 +49,8 @@ public class Article {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private User author;
 
+
+    @Column(columnDefinition = "TEXT")
     private String tag = null;
 
     // :^)

@@ -1,7 +1,11 @@
 package net.newsportal.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.newsportal.models.Article;
+import net.newsportal.models.ClassificationResult;
+import net.newsportal.models.ClassificationResultItem;
 import net.newsportal.models.dto.ArticleDto;
 import net.newsportal.payload.response.MessageResponse;
 import net.newsportal.repository.ArticleRepository;
@@ -14,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -29,6 +34,29 @@ public class ArticleController {
                              ArticleRepository articleRepository) {
         this.articleService = articleService;
         this.articleRepository = articleRepository;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getById(@PathVariable String id) {
+        Optional<Article> article = articleRepository.findById(Long.valueOf(id));
+        if (article.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(article.get());
+    }
+
+    @RequestMapping(value="/{id}", method=RequestMethod.PATCH)
+    public ResponseEntity setTags(@PathVariable String id, @RequestBody String classificationResult) {
+        Optional<Article> article = articleRepository.findById(Long.valueOf(id));
+
+        if (article.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        article.get().setTag(classificationResult);
+        articleRepository.save(article.get());
+
+        return ResponseEntity.ok().body("OK");
     }
 
     @PostMapping("/add")

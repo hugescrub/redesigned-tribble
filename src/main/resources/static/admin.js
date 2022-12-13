@@ -20,6 +20,11 @@ $(document).ready(function () {
       function () {
         location.reload();
       }
-    );
+    ).fail(function () {
+      $("button").prop("disabled", false);
+      var alert = $("#error-alert");
+      alert.removeClass("d-none");
+      $('*[data-action="send"]').html("Send to classification again");
+    });
   });
 });

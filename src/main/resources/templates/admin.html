@@ -22,6 +22,15 @@
   <main class="container">
     <div class="text-center">
       <h1 class="mb-3">Waiting for approval</h1>
+
+      <div class="alert alert-danger d-none" id="error-alert" role="alert">
+        <div>
+          There happens to be an error with classification service. Service is probably down.
+          Contact administrator or try later.
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
       <div th:each="article : ${articles}" class="border p-3 mt-2">
         <h1 class="fs-3" th:text="${article.title}" />
         <span class="badge bg-success mb-2 text-capitalize" th:text="${article.classificationResult.items[0].label}" />
@@ -33,7 +42,7 @@
           Show all classification results
         </button>
         <div class="collapse" th:id="'collapse-'+${article.id}">
-          <ul class="list-unstyled d-flex gap-3 justify-content-center">
+          <ul class="list-unstyled d-flex flex-wrap gap-3 justify-content-center">
             <li th:each="tag : ${article.classificationResult.items}" class="border p-1">
               <span th:text="${tag.label}" class="text-capitalize" />
               <span th:text="${tag.probability}" class="badge text-bg-light" />

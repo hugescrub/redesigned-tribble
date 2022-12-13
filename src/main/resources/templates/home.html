@@ -11,22 +11,7 @@
 </head>
 
 <body>
-  <nav>
-    <ul class="list-unstyled d-flex gap-3 justify-content-center p-3">
-      <li>
-        <a href="/">Home</a>
-      </li>
-      <li>
-        <a href="/about">About</a>
-      </li>
-      <li>
-        <a href="/login">Login</a>
-      </li>
-      <li>
-        <a href="/logout">Logout</a>
-      </li>
-    </ul>
-  </nav>
+  <nav th:insert="fragments/navigation.html :: nav" />
 
   <main class="container">
     <div th:each="article : ${articles}" class="border p-3 mt-2">

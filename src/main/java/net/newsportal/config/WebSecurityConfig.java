@@ -78,7 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // public endpoints
                 // TODO admin and compose are temporary
-                .authorizeRequests().antMatchers("/portal/auth/**", "/", "/login", "/article/**", "/about").permitAll()
+                .authorizeRequests().antMatchers("/portal/auth/**", "/", "/login", "/article/**", "/about", "/register").permitAll()
                 // other endpoints private
                 .anyRequest().authenticated()
                 .and()

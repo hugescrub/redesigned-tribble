@@ -60,8 +60,6 @@ public class LoginController {
         if(!cookieService.requestContainsCookie(CookiesFilter.COOKIE_NAME, request)) {
             Cookie cookie = cookieService.createCookie(username);
             response.addCookie(cookie);
-            log.warn("Cookie: " + cookie.getName() + ":" + cookie.getValue());
-            log.warn("Logged in with username - " + userDetails.getUsername());
             return "redirect:/";
         }
         log.warn("Failed login attempt was performed");

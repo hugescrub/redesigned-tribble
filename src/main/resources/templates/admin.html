@@ -2,33 +2,27 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
 </head>
 
 <body>
-  <nav>
-    <ul class="list-unstyled d-flex gap-3 justify-content-center p-3">
-      <li>
-        <a href="/">Home</a>
-      </li>
-    </ul>
-  </nav>
+  <nav th:insert="fragments/navigation.html :: admin-nav" />
 
   <main class="container">
     <div class="text-center">
       <h1 class="mb-3">Waiting for approval</h1>
 
       <div class="alert alert-danger d-none" id="error-alert" role="alert">
-        <div>
-          There happens to be an error with classification service. Service is probably down.
-          Contact administrator or try later.
+        <div id="error-message">
+          There happens to be an error with classification service. Service is
+          probably down. Contact administrator or try later.
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" id="close-alert" class="btn btn-link mt-3" aria-label="Close">Close</button>
       </div>
 
       <div th:each="article : ${articles}" class="border p-3 mt-2">
@@ -48,16 +42,28 @@
               <span th:text="${tag.probability}" class="badge text-bg-light" />
             </li>
           </ul>
+          <div class="mb-3 text-muted">
+            Classification ID: <span th:text="${article.classificationId}" />
+          </div>
         </div>
 
         <div>
-          <button class="btn btn-outline-success" th:attr="data-id=${article.id},data-action='approve'">Approve and
-            publish</button>
-          <button class="btn btn-outline-danger" th:attr="data-id=${article.id},data-action='send'">Send to
-            classification again</button>
+          <button class="btn btn-outline-success"
+            th:attr="data-id=${article.id},data-action='approve',data-classification-id=${article.classificationId}">
+            Approve and publish
+          </button>
+          <button class="btn btn-outline-primary"
+            th:attr="data-id=${article.id},data-action='send', data-classification-id=${article.classificationId}">
+            Send to classification again
+          </button>
+          <button class="btn btn-outline-danger"
+            th:attr="data-id=${article.id},data-action='mark', data-classification-id=${article.classificationId}">
+            Mark as incorrect
+          </button>
         </div>
       </div>
     </div>
+    <div th:insert="fragments/modal.html :: admin-mark-modal" />
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"

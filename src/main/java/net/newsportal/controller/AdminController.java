@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.newsportal.models.Article;
 import net.newsportal.models.ClassificationResult;
+import net.newsportal.models.Label;
 import net.newsportal.repository.ArticleRepository;
+import net.newsportal.repository.LabelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,9 @@ public class AdminController {
         this.articleRepository = articleRepository;
     }
 
+    @Autowired
+    public LabelRepository labelRepository;
+
     @GetMapping("/admin")
     public String adminPage(Model model) {
         List<Article> articles = articleRepository.findAll()
@@ -44,8 +49,36 @@ public class AdminController {
             }
         }
 
+        var labels = labelRepository.findAll();
+        model.addAttribute("labels", labels);
+
         model.addAttribute("articles", articles);
         return "admin";
+    }
+
+    @GetMapping("/tags")
+    public String tagsPage(Model model) {
+        var labels = labelRepository.findAll();
+        model.addAttribute("labels", labels);
+        return "tags";
+    }
+
+    @GetMapping("/results")
+    public String resultsPage(Model model) {
+        return "results";
+    }
+
+    @PostMapping(value = "/tags", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public String addTag(Model model, @RequestBody MultiValueMap<String, String> formData) {
+        String tag = formData.get("tag").get(0);
+
+        Label newLabel = new Label(tag);
+        labelRepository.save(newLabel);
+
+        var labels = labelRepository.findAll();
+        model.addAttribute("labels", labels);
+
+        return "tags";
     }
 
     @GetMapping("/compose")

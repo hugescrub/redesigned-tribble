@@ -2,6 +2,7 @@ package net.newsportal.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import net.newsportal.models.Article;
+import net.newsportal.models.ArticlePatchBody;
 import net.newsportal.models.dto.ArticleDto;
 import net.newsportal.payload.response.MessageResponse;
 import net.newsportal.repository.ArticleRepository;
@@ -42,19 +43,29 @@ public class ArticleController {
     }
 
     @RequestMapping(value="/{id}", method=RequestMethod.PATCH)
-    public ResponseEntity<?> setTags(@PathVariable String id, @RequestBody String classificationResult) {
+    public ResponseEntity<?> setTags(@PathVariable String id, @RequestBody ArticlePatchBody articlePatchBody) {
         Optional<Article> article = articleRepository.findById(Long.valueOf(id));
 
         if (article.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+        Article articleItem = article.get();
 
-        article.get().setTag(classificationResult);
+        if (articlePatchBody.classificationResult != null) {
+            articleItem.setTag(articlePatchBody.classificationResult);
+        }
+        if (articlePatchBody.classificationId != null) {
+            articleItem.setClassificationId(articlePatchBody.classificationId);
+        }
+        if (articlePatchBody.isApproved != null) {
+            articleItem.setApproved(articlePatchBody.isApproved);
+        }
         articleRepository.save(article.get());
 
         return ResponseEntity.ok().body("OK");
     }
 
+    // DEPRECATED
     @RequestMapping(value="/approve/{id}", method = RequestMethod.PATCH)
     public ResponseEntity<?> setIsApproved(@PathVariable String id) {
         Optional<Article> article = articleRepository.findById(Long.valueOf(id));

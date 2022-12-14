@@ -57,6 +57,17 @@ public class Article {
     @Transient
     private ClassificationResult classificationResult;
 
+    @Column
+    private Long classificationId;
+
+    public Long getClassificationId() {
+        return classificationId;
+    }
+
+    public void setClassificationId(Long classificationId) {
+        this.classificationId = classificationId;
+    }
+
     @BooleanFlag
     private boolean isApproved = false;
 

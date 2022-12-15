@@ -3,11 +3,9 @@ package net.newsportal.service;
 import net.newsportal.models.ERole;
 import net.newsportal.models.Role;
 import net.newsportal.models.User;
-import net.newsportal.payload.request.UserLoginRequest;
 import net.newsportal.payload.request.UserRegisterRequest;
 import net.newsportal.repository.RoleRepository;
 import net.newsportal.repository.UserRepository;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -55,9 +53,5 @@ public class UserService {
         user.getRoles().add(assignedRole);
         userRepository.save(user);
         return true;
-    }
-
-    public boolean loginUser(UserLoginRequest request) {
-        throw new NotYetImplementedException();
     }
 }

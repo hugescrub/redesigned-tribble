@@ -1,5 +1,6 @@
 package net.newsportal.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+@Slf4j
 @Component
 public class CookiesFilter extends OncePerRequestFilter {
 
@@ -32,6 +34,8 @@ public class CookiesFilter extends OncePerRequestFilter {
         authCookie.ifPresent(cookie ->
                 SecurityContextHolder.getContext().setAuthentication(
                         new PreAuthenticatedAuthenticationToken(cookie.getValue(), null)));
+
+        authCookie.ifPresent(cookie -> log.info("Cookie: " + cookie.getName() + " : " + cookie.getValue()));
 
         // continue with the filter chain
         filterChain.doFilter(request, response);

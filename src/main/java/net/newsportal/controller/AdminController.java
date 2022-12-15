@@ -7,6 +7,7 @@ import net.newsportal.models.ClassificationResult;
 import net.newsportal.models.Label;
 import net.newsportal.repository.ArticleRepository;
 import net.newsportal.repository.LabelRepository;
+import net.newsportal.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -22,10 +23,13 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     private final ArticleRepository articleRepository;
+    private final ArticleService articleService;
 
     @Autowired
-    public AdminController(ArticleRepository articleRepository) {
+    public AdminController(ArticleRepository articleRepository,
+                           ArticleService articleService) {
         this.articleRepository = articleRepository;
+        this.articleService = articleService;
     }
 
     @Autowired
@@ -90,9 +94,7 @@ public class AdminController {
     public String createArticle(Model model, @RequestBody MultiValueMap<String, String> formData) {
         String title = formData.get("title").get(0);
         String body = formData.get("body").get(0);
-
-        // TODO create article logic
-
+        articleService.createArticle(title, body); // TODO error handling
         return "compose";
     }
 }

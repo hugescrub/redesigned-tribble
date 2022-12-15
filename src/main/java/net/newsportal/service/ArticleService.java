@@ -1,21 +1,20 @@
 package net.newsportal.service;
 
 import net.newsportal.models.Article;
-import net.newsportal.models.Source;
-import net.newsportal.models.User;
-import net.newsportal.models.dto.ArticleDto;
 import net.newsportal.repository.ArticleRepository;
 import net.newsportal.repository.SourceRepository;
 import net.newsportal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 @Service
 public class ArticleService {
+
+    private static final String BASE_URL = "http://serviceAddr:servicePort";
 
     private final ArticleRepository articleRepository;
     private final SourceRepository sourceRepository;
@@ -31,25 +30,22 @@ public class ArticleService {
     }
 
     @Transactional
-    public HttpStatus createArticle(ArticleDto articleDto) {
-        final String authorUsername = articleDto.getAuthorUsername();
-        if (articleRepository.existsByTitle(articleDto.getTitle())) {
-            return HttpStatus.BAD_REQUEST; // return exists with such title message from controller
-        } else if (authorUsername != null && userRepository.existsByUsername(authorUsername)) {
-            User user = userRepository.findByUsername(authorUsername);
-            // get source from database associated with source passed in request body
-            Source source = sourceRepository.findBySourceName(articleDto.getSource().getSourceName());
-            Article article = new Article(
-                    articleDto.getTitle(),
-                    articleDto.getBody(),
-                    LocalDateTime.now()
-            );
-            article.setAuthor(user);
-            article.getSources().add(source);
+    public boolean createArticle(String title, String body) {
+        if (!articleRepository.existsByTitle(title)) {
+            Article article = new Article(title, body, LocalDateTime.now());
+            Long articleId = article.getId();
             articleRepository.save(article);
-            return HttpStatus.OK;
-        } else {
-            return HttpStatus.NOT_FOUND; // return no user found in database
+
+            WebClient client = WebClient.create(BASE_URL);
+            client.post()
+                    .uri("/serviceValidationEndpoint")
+                    .bodyValue(articleId)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .subscribe(System.out::println);
+
+            return true;
         }
+        return false;
     }
 }

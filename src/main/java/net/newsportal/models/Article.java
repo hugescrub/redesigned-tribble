@@ -10,8 +10,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "articles")
@@ -24,7 +22,7 @@ public class Article {
 
     @NotNull
     @NotBlank
-    @Size(min = 5, max = 30)
+    @Size(min = 5, max = 60)
     private String title;
 
     @NotNull
@@ -38,13 +36,6 @@ public class Article {
 
     @UpdateTimestamp
     private LocalDateTime updated;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinTable(name = "article_sources",
-            joinColumns = @JoinColumn(name = "article_id"),
-            inverseJoinColumns = @JoinColumn(name = "source_id"),
-            uniqueConstraints = @UniqueConstraint(columnNames = {"article_id", "source_id"}))
-    private List<Source> sources = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private User author;
@@ -71,6 +62,9 @@ public class Article {
     @BooleanFlag
     private boolean isApproved = false;
 
+    @BooleanFlag
+    private boolean isFake = true;
+
     public Article() {
     }
 
@@ -82,10 +76,6 @@ public class Article {
 
     public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
-    }
-
-    public void setSources(List<Source> sources) {
-        this.sources = sources;
     }
 
     public void setAuthor(User author) {
@@ -100,6 +90,9 @@ public class Article {
         isApproved = approved;
     }
 
+    public void setFake(boolean isFake) {
+        this.isFake = isFake;
+    }
     public ClassificationResult getClassificationResult() {
         return classificationResult;
     }

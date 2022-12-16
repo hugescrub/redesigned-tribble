@@ -25,6 +25,7 @@ public class ArticleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
+        log.warn("Called getById");
         Optional<Article> article = articleRepository.findById(id);
         if (article.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -32,26 +33,23 @@ public class ArticleController {
         return ResponseEntity.ok().body(article.get());
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    public ResponseEntity<?> setTags(@PathVariable Long id, @RequestBody ArticlePatchBody articlePatchBody) {
-        Optional<Article> article = articleRepository.findById(id);
+    @RequestMapping(value = "/{articleId}", method = RequestMethod.PATCH)
+    public ResponseEntity<?> setTags(@PathVariable Long articleId, @RequestBody ArticlePatchBody articlePatchBody) {
+        Article article = articleRepository.findById(articleId).get();
 
-        if (article.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        if (articlePatchBody.getClassificationResult() != null) {
+            article.setTag(articlePatchBody.getClassificationResult());
         }
-        Article articleItem = article.get();
-
-        if (articlePatchBody.classificationResult != null) {
-            articleItem.setTag(articlePatchBody.classificationResult);
+        if (articlePatchBody.getClassificationId() != null) {
+            article.setClassificationId(articlePatchBody.getClassificationId());
         }
-        if (articlePatchBody.classificationId != null) {
-            articleItem.setClassificationId(articlePatchBody.classificationId);
+        if (articlePatchBody.getIsApproved() != null) {
+            article.setApproved(articlePatchBody.getIsApproved());
         }
-        if (articlePatchBody.isApproved != null) {
-            articleItem.setApproved(articlePatchBody.isApproved);
+        if (articlePatchBody.getIsFake() != null) {
+            article.setFake(articlePatchBody.getIsFake());
         }
-        articleRepository.save(article.get());
-
+        articleRepository.save(article);
         return ResponseEntity.ok().body("OK");
     }
 

@@ -3,6 +3,7 @@ package net.newsportal.controller;
 import lombok.extern.slf4j.Slf4j;
 import net.newsportal.models.Article;
 import net.newsportal.models.ArticlePatchBody;
+import net.newsportal.payload.response.MessageResponse;
 import net.newsportal.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,17 +24,17 @@ public class ArticleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable String id) {
-        Optional<Article> article = articleRepository.findById(Long.valueOf(id));
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        Optional<Article> article = articleRepository.findById(id);
         if (article.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(article.get());
     }
 
-    @RequestMapping(value="/{id}", method=RequestMethod.PATCH)
-    public ResponseEntity<?> setTags(@PathVariable String id, @RequestBody ArticlePatchBody articlePatchBody) {
-        Optional<Article> article = articleRepository.findById(Long.valueOf(id));
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    public ResponseEntity<?> setTags(@PathVariable Long id, @RequestBody ArticlePatchBody articlePatchBody) {
+        Optional<Article> article = articleRepository.findById(id);
 
         if (article.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -54,8 +55,22 @@ public class ArticleController {
         return ResponseEntity.ok().body("OK");
     }
 
+    // TODO temp path to escape ambiguous mapping
+    @RequestMapping(value = "/fakes/{articleId}", method = RequestMethod.PATCH)
+    public ResponseEntity<?> setFake(@PathVariable Long articleId, @RequestParam Boolean isFake) {
+        if (articleRepository.existsById(articleId)) {
+            Article article = articleRepository.findById(articleId).get();
+            article.setFake(isFake);
+            articleRepository.save(article);
+            return ResponseEntity.ok()
+                    .body(new MessageResponse("Article with id_" + articleId + ". Fake value changed, now is " + isFake));
+        }
+        return ResponseEntity.badRequest()
+                .body(new MessageResponse("No article found with id_" + articleId));
+    }
+
     // DEPRECATED
-    @RequestMapping(value="/approve/{id}", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/approve/{id}", method = RequestMethod.PATCH)
     public ResponseEntity<?> setIsApproved(@PathVariable String id) {
         Optional<Article> article = articleRepository.findById(Long.valueOf(id));
 

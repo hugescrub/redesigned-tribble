@@ -64,11 +64,47 @@ $(document).ready(function () {
 
   $('*[data-action="mark"]').click(function () {
     var dataset = this.dataset;
+
     $("#admin-mark-modal").addClass("d-block");
 
     $("#publish").click(function () {
-      var reason = $("#reason-select").value;
+      var reason = $("#reason-select")[0].value;
+      var correctLabel = $("#label-select")[0].value;
+
       if (reason === "classification") {
+        $.ajax({
+          url: `http://localhost:8081/classificationResults/${dataset.classificationId}`,
+          method: "patch",
+          contentType: "application/json",
+          xhrFields: {
+            withCredentials: true,
+          },
+          data: JSON.stringify({
+            isCorrect: false,
+            correctLabel,
+          }),
+          error: function () {
+            $("button").prop("disabled", false);
+            showErrorAlert(CLASSIFICATION_ERROR_MSG);
+          },
+          success: function () {
+            $.ajax({
+              url: `portal/news/${dataset.id}`,
+              method: "patch",
+              contentType: "application/json",
+              data: JSON.stringify({
+                classificationResult: `{items":[{"label":"${correctLabel},"probability":1}]}`,
+              }),
+              error: function () {
+                $("button").prop("disabled", false);
+                showErrorAlert(INNER_ERROR_MSG);
+              },
+              success: function () {
+                location.reload();
+              },
+            });
+          },
+        });
       } else {
         // impossible
       }
@@ -76,8 +112,44 @@ $(document).ready(function () {
     });
 
     $("#not-publish").click(function () {
-      var reason = $("#reason-select").value;
+      var reason = $("#reason-select")[0].value;
+      var correctLabel = $("#label-select")[0].value;
+
+      $("button").prop("disabled", true);
       if (reason === "classification") {
+        $.ajax({
+          url: `http://localhost:8081/classificationResults/${dataset.classificationId}`,
+          method: "patch",
+          contentType: "application/json",
+          xhrFields: {
+            withCredentials: true,
+          },
+          data: JSON.stringify({
+            isCorrect: false,
+            correctLabel,
+          }),
+          error: function () {
+            $("button").prop("disabled", false);
+            showErrorAlert(CLASSIFICATION_ERROR_MSG);
+          },
+          success: function () {
+            $.ajax({
+              url: `portal/news/${dataset.id}`,
+              method: "patch",
+              contentType: "application/json",
+              data: JSON.stringify({
+                classificationResult: "",
+              }),
+              error: function () {
+                $("button").prop("disabled", false);
+                showErrorAlert(INNER_ERROR_MSG);
+              },
+              success: function () {
+                location.reload();
+              },
+            });
+          },
+        });
       } else {
         // TODO
       }

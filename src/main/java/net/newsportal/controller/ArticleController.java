@@ -44,6 +44,9 @@ public class ArticleController {
         if (articlePatchBody.classificationResult != null) {
             articleItem.setTag(articlePatchBody.classificationResult);
         }
+        if (articlePatchBody.classificationResult == "") {
+            articleItem.setTag(null);
+        }
         if (articlePatchBody.classificationId != null) {
             articleItem.setClassificationId(articlePatchBody.classificationId);
         }

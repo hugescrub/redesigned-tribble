@@ -1,36 +1,17 @@
 package net.newsportal.models;
 
+import lombok.Data;
+
+@Data
 public class ArticlePatchBody {
-    public String classificationResult;
+    private String classificationResult;
 
-    public Boolean isApproved;
+    private Boolean isApproved;
 
-    public Long classificationId;
+    private Boolean isFake;
+
+    private Long classificationId;
 
     public ArticlePatchBody() {
-    }
-
-    public String getClassificationResult() {
-        return classificationResult;
-    }
-
-    public void setClassificationResult(String classificationResult) {
-        this.classificationResult = classificationResult;
-    }
-
-    public boolean isApproved() {
-        return isApproved;
-    }
-
-    public void setApproved(boolean approved) {
-        isApproved = approved;
-    }
-
-    public Long getClassificationId() {
-        return classificationId;
-    }
-
-    public void setClassificationId(Long classificationId) {
-        this.classificationId = classificationId;
     }
 }

@@ -25,7 +25,6 @@ public class ArticleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
-        log.warn("Called getById");
         Optional<Article> article = articleRepository.findById(id);
         if (article.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -43,32 +42,19 @@ public class ArticleController {
         if (articlePatchBody.getClassificationId() != null) {
             article.setClassificationId(articlePatchBody.getClassificationId());
         }
-        if (articlePatchBody.classificationResult == "") {
-            articleItem.setTag(null);
+        if (articlePatchBody.getClassificationResult() != null
+                && articlePatchBody.getClassificationResult().equals("")) {
+            article.setTag(null);
         }
-        if (articlePatchBody.classificationId != null) {
-            articleItem.setClassificationId(articlePatchBody.classificationId);
+        if (articlePatchBody.getClassificationId() != null) {
+            article.setClassificationId(articlePatchBody.getClassificationId());
         }
         if (articlePatchBody.getIsFake() != null) {
             article.setFake(articlePatchBody.getIsFake());
         }
         articleRepository.save(article);
-        return ResponseEntity.ok().body("OK");
-    }
-
-    // TODO temp path to escape ambiguous mapping
-    @RequestMapping(value = "/fakes/{articleId}", method = RequestMethod.PATCH)
-    public ResponseEntity<?> setFake(@PathVariable Long articleId, @RequestParam Boolean isFake) {
-        if (articleRepository.existsById(articleId)) {
-            Article article = articleRepository.findById(articleId).get();
-            article.setFake(isFake);
-            articleRepository.save(article);
-            return ResponseEntity.ok()
-                    .body(new MessageResponse(
-                            "Article with id_" + articleId + ". Fake value changed, now is " + isFake));
-        }
-        return ResponseEntity.badRequest()
-                .body(new MessageResponse("No article found with id_" + articleId));
+        return ResponseEntity.ok()
+                .body(new MessageResponse("OK"));
     }
 
     // DEPRECATED

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
@@ -53,10 +52,10 @@ public class LoginController {
             );
         }
 
-        // get user details
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-        // create cookie
+        if(cookieService.requestContainsCookie(CookiesFilter.COOKIE_NAME, request)){
+            return "redirect:/";
+        }
+        // create cookie if not present
         if(!cookieService.requestContainsCookie(CookiesFilter.COOKIE_NAME, request)) {
             Cookie cookie = cookieService.createCookie(username);
             response.addCookie(cookie);

@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -91,10 +92,10 @@ public class AdminController {
     }
 
     @PostMapping(value = "/compose", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public String createArticle(Model model, @RequestBody MultiValueMap<String, String> formData) {
+    public String createArticle(Model model, @RequestBody MultiValueMap<String, String> formData, HttpServletRequest request) {
         String title = formData.get("title").get(0);
         String body = formData.get("body").get(0);
-        articleService.createArticle(title, body); // TODO error handling
+        articleService.createArticle(title, body, request); // TODO error handling
         return "compose";
     }
 }

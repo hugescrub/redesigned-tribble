@@ -79,9 +79,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // public endpoints
-                // TODO portal/news/ is public temp
+                // TODO GET portal/news/{id} is public temp
                 .antMatchers("/portal/auth/**", "/", "/login", "/article/**", "/about", "/register",
-                        "/portal/news/**", "/portal/news/{articleId}")
+                        "/portal/news/{id}")
                 .permitAll()
                 // other endpoints private
                 .anyRequest().authenticated()
@@ -95,6 +95,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     // TODO temporary disabled security chain for incoming requests
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/portal/news/**", "/portal/news/{articleId}");
+        web.ignoring().antMatchers("/portal/news/{id}");
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -79,9 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // public endpoints
-                // TODO GET portal/news/{id} is public temp
-                .antMatchers("/portal/auth/**", "/", "/login", "/article/**", "/about", "/register",
-                        "/portal/news/{id}")
+                .antMatchers("/portal/auth/**", "/", "/login", "/article/**", "/about", "/register")
                 .permitAll()
                 // other endpoints private
                 .anyRequest().authenticated()
@@ -90,11 +87,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(userAuthenticationEntryPoint);
 
         http.csrf().disable();
-    }
-
-    // TODO temporary disabled security chain for incoming requests
-    @Override
-    public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/portal/news/{id}");
     }
 }

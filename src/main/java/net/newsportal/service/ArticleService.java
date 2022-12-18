@@ -44,8 +44,8 @@ public class ArticleService {
             client.post()
                     .uri("/api/validator/validate")
                     .bodyValue(articleRepository.findByTitle(title).getId())
-                    .headers(httpHeaders ->
-                            httpHeaders.setAll(cookies))
+                    .cookies(c ->
+                            c.setAll(cookies))
                     .retrieve()
                     .bodyToMono(String.class)
                     .subscribe(System.out::println);

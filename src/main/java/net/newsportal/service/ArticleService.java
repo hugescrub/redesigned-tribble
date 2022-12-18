@@ -19,7 +19,7 @@ import java.util.Map;
 @Service
 public class ArticleService {
 
-    private static final String VALIDATION_BASE_URL = "http://localhost:8081";
+    private static final String VALIDATION_BASE_URL = "http://localhost:8082";
 
     private final ArticleRepository articleRepository;
 

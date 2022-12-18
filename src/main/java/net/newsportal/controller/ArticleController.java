@@ -46,6 +46,9 @@ public class ArticleController {
                 && articlePatchBody.getClassificationResult().equals("")) {
             article.setTag(null);
         }
+        if(articlePatchBody.getIsApproved() != null){
+            article.setApproved(articlePatchBody.getIsApproved());
+        }
         if (articlePatchBody.getClassificationId() != null) {
             article.setClassificationId(articlePatchBody.getClassificationId());
         }

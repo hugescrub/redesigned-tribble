@@ -3,14 +3,15 @@ package net.newsportal.service;
 import lombok.extern.slf4j.Slf4j;
 import net.newsportal.models.Article;
 import net.newsportal.repository.ArticleRepository;
+import net.newsportal.security.CookiesFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,9 +33,9 @@ public class ArticleService {
         if (!articleRepository.existsByTitle(title)) {
             // collect cookies
             Map<String, String> cookies = new HashMap<>();
-            for (Cookie c : request.getCookies()) {
-                cookies.put(c.getName(), c.getValue());
-            }
+            Arrays.stream(request.getCookies())
+                    .filter(cookie -> cookie.getName().equals(CookiesFilter.COOKIE_NAME) || cookie.getName().equals("JSESSIONID"))
+                    .forEach(cookie -> cookies.put(cookie.getName(), cookie.getValue()));
 
             Article article = new Article(title, body, LocalDateTime.now());
             articleRepository.save(article);

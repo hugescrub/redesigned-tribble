@@ -16,9 +16,9 @@
   <main class="container">
     <div th:each="article : ${articles}" class="border p-3 mt-2">
       <h1 class="fs-3" th:text="${article.title}" />
+      <p class="badge bg-success mb-2 text-capitalize" th:text="${article.tag.substring(article.tag.indexOf(':', 10) + 2, article.tag.indexOf(',') - 1)}" />
       <p class="mb-2" th:text="${article.body}" />
       <p class="text-muted" th:text="|${article.author} - ${article.created}|" />
-      <p th:text="${article.tag.substring(article.tag.indexOf(':', 10) + 2, article.tag.indexOf(',') - 1)}" />
       <a th:href="@{/article/{id}(id=${article.id})}" class="btn btn-outline-primary">
         Read More
       </a>

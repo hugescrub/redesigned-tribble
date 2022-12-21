@@ -93,7 +93,8 @@ $(document).ready(function () {
               method: "patch",
               contentType: "application/json",
               data: JSON.stringify({
-                classificationResult: `{items":[{"label":"${correctLabel},"probability":1}]}`,
+                classificationResult: `{"items":[{"label":"${correctLabel}","probability":1}]}`,
+                isApproved: true
               }),
               error: function () {
                 $("button").prop("disabled", false);

@@ -95,7 +95,7 @@ public class AdminController {
     public String createArticle(Model model, @RequestBody MultiValueMap<String, String> formData, HttpServletRequest request) {
         String title = formData.get("title").get(0);
         String body = formData.get("body").get(0);
-        articleService.createArticle(title, body, request); // TODO error handling
+        articleService.createArticle(title, body, request);
         return "compose";
     }
 }

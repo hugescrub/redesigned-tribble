@@ -22,12 +22,12 @@ public class Article {
 
     @NotNull
     @NotBlank
-    @Size(min = 5, max = 60)
+    @Size(min = 5, max = 160)
     private String title;
 
     @NotNull
     @NotBlank
-    @Size(min = 5, max = 800)
+    @Size(min = 5, max = 3000)
     private String body;
 
     @NotNull

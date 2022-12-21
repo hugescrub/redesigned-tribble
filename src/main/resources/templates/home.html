@@ -18,6 +18,7 @@
       <h1 class="fs-3" th:text="${article.title}" />
       <p class="mb-2" th:text="${article.body}" />
       <p class="text-muted" th:text="|${article.author} - ${article.created}|" />
+      <p th:text="${article.tag.substring(article.tag.indexOf(':', 10) + 2, article.tag.indexOf(',') - 1)}" />
       <a th:href="@{/article/{id}(id=${article.id})}" class="btn btn-outline-primary">
         Read More
       </a>

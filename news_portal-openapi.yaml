@@ -1,0 +1,301 @@
+openapi: "3.0.3"
+info:
+  title: "news_portal API"
+  description: "news_portal API"
+  version: "1.0.0"
+servers:
+  - url: "https://news_portal"
+paths:
+  /portal/labels:
+    get:
+      summary: "GET portal/labels"
+      operationId: "getLabels"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Iterable"
+  /portal/news/approve/{id}:
+    patch:
+      summary: "PATCH portal/news/approve/{id}"
+      operationId: "setIsApproved"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /portal/news/{articleId}:
+    patch:
+      summary: "PATCH portal/news/{articleId}"
+      operationId: "setTags"
+      parameters:
+        - name: "articleId"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArticlePatchBody"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /portal/news/{id}:
+    get:
+      summary: "GET portal/news/{id}"
+      operationId: "getById"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /portal/auth/login:
+    post:
+      summary: "POST portal/auth/login"
+      operationId: "loginUser"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLoginRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /portal/auth/register:
+    post:
+      summary: "POST portal/auth/register"
+      operationId: "registerUser"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegisterRequest"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ResponseEntity"
+  /admin:
+    get:
+      summary: "GET admin"
+      operationId: "adminPage"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /compose:
+    get:
+      summary: "GET compose"
+      operationId: "composePage"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+    post:
+      summary: "POST compose"
+      operationId: "createArticle"
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/MultiValueMap"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /results:
+    get:
+      summary: "GET results"
+      operationId: "resultsPage"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /tags:
+    get:
+      summary: "GET tags"
+      operationId: "tagsPage"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+    post:
+      summary: "POST tags"
+      operationId: "addTag"
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/MultiValueMap"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /login:
+    get:
+      summary: "GET login"
+      operationId: "getLoginView"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+    post:
+      summary: "POST login"
+      operationId: "login"
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/MultiValueMap"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /logout:
+    post:
+      summary: "POST logout"
+      operationId: "removeCookies"
+      responses:
+        "200":
+          description: "OK"
+  /about:
+    get:
+      summary: "GET about"
+      operationId: "about"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /article/{id}:
+    get:
+      summary: "GET article/{id}"
+      operationId: "getArticle"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+components:
+  schemas:
+    Iterable:
+      type: "object"
+      properties: { }
+    HttpHeaders:
+      type: "object"
+      properties: { }
+    ResponseEntity:
+      type: "object"
+      properties:
+        headers:
+          $ref: "#/components/schemas/HttpHeaders"
+    ArticlePatchBody:
+      type: "object"
+      properties:
+        classificationResult:
+          type: "string"
+        isApproved:
+          type: "boolean"
+        isFake:
+          type: "boolean"
+        classificationId:
+          type: "integer"
+          format: "int64"
+    UserLoginRequest:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        password:
+          type: "string"
+    UserRegisterRequest:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        firstName:
+          type: "string"
+        lastName:
+          type: "string"
+        email:
+          type: "string"
+        password:
+          type: "string"
+        role:
+          type: "string"
+    MultiValueMap:
+      type: "object"
+      properties: {...values}

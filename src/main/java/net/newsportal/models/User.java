@@ -1,5 +1,6 @@
 package net.newsportal.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -42,6 +43,7 @@ public class User implements Serializable {
     private String email;
 
     @NotBlank
+    @JsonIgnore
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
